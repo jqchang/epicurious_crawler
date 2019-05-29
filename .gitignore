@@ -1,5 +1,5 @@
-food_info.csv
-images/*.jpg
+*.csv
+images/*
 *.pyc
 .DS_Store
 *.zip

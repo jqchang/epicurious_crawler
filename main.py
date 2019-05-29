@@ -18,6 +18,9 @@ if __name__ == "__main__":
         js = json.loads(j)
         for rc in js["items"]:
             try:
+                uses_placeholder = rc["photoData"]["filename"].startswith(r"no-recipe-card-")
+                if uses_placeholder:
+                    continue
                 ro = Recipe(rc)
                 if(ro.has_calories()):
                     all_recipes.append(ro)
@@ -28,8 +31,10 @@ if __name__ == "__main__":
             except UnicodeEncodeError:
                 errors += 1
                 ignored += 1
-
-        api_url = js["page"]["nextUri"]
-        r = http.request('GET',root_url+api_url)
+        if js["page"].get("nextUri"):
+            api_url = js["page"]["nextUri"]
+            r = http.request('GET',root_url+api_url)
+        else:
+            break
     print("{} recipes found.")
     print("{} recipes rejected due to no calories.")
