@@ -3,7 +3,9 @@ import json
 from recipe import Recipe
 
 root_url = "https://services.epicurious.com/"
-api_url = "api/search/v1/query?content=recipe"
+START_PAGE = 1797
+PER_PAGE = 20
+api_url = "api/search/v1/query?content=recipe&page={}&size={}".format(START_PAGE,PER_PAGE)
 http = urllib3.PoolManager()
 urllib3.disable_warnings()
 
@@ -20,6 +22,7 @@ if __name__ == "__main__":
             try:
                 uses_placeholder = rc["photoData"]["filename"].startswith(r"no-recipe-card-")
                 if uses_placeholder:
+                    ignored += 1
                     continue
                 ro = Recipe(rc)
                 if(ro.has_calories()):
@@ -29,12 +32,10 @@ if __name__ == "__main__":
                 else:
                     ignored += 1
             except UnicodeEncodeError:
-                errors += 1
                 ignored += 1
         if js["page"].get("nextUri"):
             api_url = js["page"]["nextUri"]
             r = http.request('GET',root_url+api_url)
         else:
             break
-    print("{} recipes found.")
-    print("{} recipes rejected due to no calories.")
+    print("{} recipes rejected due to errors or missing data.".format(ignored))

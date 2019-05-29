@@ -1,3 +1,5 @@
+# Remove recipes with placeholder images
+
 infile = open('food_info.csv','r')
 outfile = open('food_info_cleaned.csv','w+')
 
