@@ -11,7 +11,7 @@ class Recipe:
         self.json = json
         self.link = "https://www.epicurious.com/"+json["url"]
         self.title = json["hed"]
-        self.imgurl = r"https://assets.epicurious.com/photos/{}/6:4/w_620%2Ch_413/{}".format(json["photoData"]["id"],json["photoData"]["filename"])
+        self.imgurl = r"https://assets.epicurious.com/photos/{}/6:4/w_620%2Ch_413/{}".format(json["photoData"]["id"],json["photoData"]["filename"].replace(r' ',r'%20'))
         # save image
         rc = http.request("GET",self.link)
         if(rc.status == 200):
@@ -31,7 +31,6 @@ class Recipe:
 
     def info(self):
         if hasattr(self, 'calories'):
-            # return (self.title,self.calories)
             return (self.title,self.calories,self.carbohydrates,self.protein,self.fat)
         else:
             return (self.title)
@@ -39,7 +38,7 @@ class Recipe:
     def save_info(self):
         http = urllib3.PoolManager()
         r = http.request('GET', self.imgurl, preload_content=False)
-        path = './images/{}'.format(self.json["photoData"]["filename"])
+        path = './images/{}'.format(self.json["photoData"]["filename"].replace(r' ',r'%20'))
         if not os.path.exists(os.path.dirname(path)):
             try:
                 os.makedirs(os.path.dirname('./images/'))
