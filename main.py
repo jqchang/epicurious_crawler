@@ -11,18 +11,23 @@ all_recipes = []
 
 if __name__ == "__main__":
     r = http.request('GET',root_url+api_url)
-    no_cal = 0
+    ignored = 0
+    errors = 0
     while r.status == 200:
         j = r.data
         js = json.loads(j)
         for rc in js["items"]:
-            ro = Recipe(rc)
-            if(ro.has_calories()):
-                all_recipes.append(ro)
-                ro.save_info()
-                print(ro.info())
-            else:
-                no_cal += 1
+            try:
+                ro = Recipe(rc)
+                if(ro.has_calories()):
+                    all_recipes.append(ro)
+                    ro.save_info()
+                    print(ro.info())
+                else:
+                    ignored += 1
+            except UnicodeEncodeError:
+                errors += 1
+                ignored += 1
 
         api_url = js["page"]["nextUri"]
         r = http.request('GET',root_url+api_url)
