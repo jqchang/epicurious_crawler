@@ -10,7 +10,7 @@ np.random.seed(123)  # for reproducibility
 DEBUG = True
 
 # Keep only a single checkpoint, the best over test accuracy.
-filepath = "./output/food-cnn-best.hdf5"
+filepath = "./output/food-cnn-model.hdf5"
 checkpoint = ModelCheckpoint(filepath,
                             monitor='val_loss',
                             verbose=1,
@@ -47,7 +47,8 @@ model.fit_generator(generator=train_generator,
                     steps_per_epoch=STEP_SIZE_TRAIN,
                     validation_data=valid_generator,
                     validation_steps=STEP_SIZE_VALID,
-                    epochs=10)
+                    epochs=10,
+                    callbacks=[checkpoint])
 
 # Evaluate the model on test set
 score = model.evaluate(x_test, y_test, verbose=0)
