@@ -3,8 +3,6 @@ import numpy as np
 import tensorflow as tf
 from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
-import cv2
-import gc
 
 np.random.seed(123)  # for reproducibility
 DEBUG = True
