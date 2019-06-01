@@ -1,6 +1,7 @@
-*.csv
-images/*
-*.pyc
 .DS_Store
+*.pyc
+images/*
+keys/*
+output/*
 *.zip
 *.bak
