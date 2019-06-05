@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>Calorie count</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/predict.css')}}"
+  </head>
+  <body>
+    <img src="data:image/png;base64, {{ img | safe }}"/>
+    <table>
+      <thead>
+        <th>Calories</th>
+        <th>Carbohydrates (g)</th>
+        <th>Protein (g)</th>
+        <th>Fat (g)</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{cals}}</td>
+          <td>{{carbs}}</td>
+          <td>{{protein}}</td>
+          <td>{{fat}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
