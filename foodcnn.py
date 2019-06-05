@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 
 np.random.seed(123)  # for reproducibility
@@ -38,7 +38,8 @@ model.add(tf.keras.layers.Dropout(0.5))
 model.add(tf.keras.layers.Dense(4, activation='linear'))
 
 model.summary()
-model.compile(loss='mean_squared_error', optimizer='adam')
+opt = tf.keras.optimizers.Adam(lr=0.1, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+model.compile(loss='mean_squared_error', optimizer=opt)
 STEP_SIZE_TRAIN=train_generator.n//train_generator.batch_size
 STEP_SIZE_VALID=valid_generator.n//valid_generator.batch_size
 model.fit_generator(generator=train_generator,
