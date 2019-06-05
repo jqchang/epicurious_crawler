@@ -23,7 +23,7 @@ checkpoint = ModelCheckpoint(filepath,
 
 model = tf.keras.Sequential()
 model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=2, padding='same', activation='relu',
-                                input_shape=(413,620,3)))
+                                input_shape=(620,413,3)))
 model.add(tf.keras.layers.MaxPooling2D(pool_size=2))
 model.add(tf.keras.layers.Dropout(0.3))
 
@@ -55,8 +55,8 @@ def predict():
             nparr = np.fromstring(img_str, np.uint8)
             img_np = cv2.imdecode(nparr,cv2.IMREAD_COLOR)
             print("checkpoint")
-            img_scaled = cv2.resize(img_np,(413,620))
-            img_arr = np.reshape(img_scaled,[1,413,620,3])
+            img_scaled = cv2.resize(img_np,(620,413))
+            img_arr = np.reshape(img_scaled,[1,620,413,3])
             print(img_arr.shape)
             with graph.as_default():
                 y = model.predict(img_arr)
