@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 
 np.random.seed(123)  # for reproducibility
