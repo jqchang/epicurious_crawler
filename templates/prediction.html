@@ -14,10 +14,10 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{cals}}</td>
-          <td>{{carbs}}</td>
-          <td>{{protein}}</td>
-          <td>{{fat}}</td>
+          <td>{{'%0.2f'| format(cals|float)}}</td>
+          <td>{{'%0.2f'| format(carbs|float)}}</td>
+          <td>{{'%0.2f'| format(protein|float)}}</td>
+          <td>{{'%0.2f'| format(fat|float)}}</td>
         </tr>
       </tbody>
     </table>
