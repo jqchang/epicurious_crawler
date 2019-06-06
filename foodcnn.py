@@ -1,11 +1,16 @@
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
+try:
+    from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
+except ModuleNotFoundError:
+    from tensorflow.python.keras.callbacks import ModelCheckpoint,LearningRateScheduler
+
 
 np.random.seed(123)  # for reproducibility
 DEBUG = True
+initial_lr = 0.3
 
 # Keep only a single checkpoint, the best over test accuracy.
 filepath = "./output/food-cnn-model.hdf5"
@@ -14,6 +19,8 @@ checkpoint = ModelCheckpoint(filepath,
                             verbose=1,
                             save_best_only=True,
                             mode='min')
+
+
 
 df = pd.read_csv('food_info_cleaned.csv',header=None)
 datagen=ImageDataGenerator(rescale=1./255,validation_split=0.15)
@@ -40,16 +47,23 @@ model.add(tf.keras.layers.Dropout(0.5))
 model.add(tf.keras.layers.Dense(4, activation='linear'))
 
 model.summary()
-opt = tf.keras.optimizers.Adam(lr=0.3, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+opt = tf.keras.optimizers.Adam(lr=initial_lr, beta_1=0.9, beta_2=0.999,
+                                epsilon=None, decay=0.0, amsgrad=False)
 model.compile(loss='mean_squared_error', optimizer=opt)
 STEP_SIZE_TRAIN=train_generator.n//train_generator.batch_size
 STEP_SIZE_VALID=valid_generator.n//valid_generator.batch_size
+
+def scheduler(epoch):
+    return initial_lr / (2**epoch)
+
+change_lr = LearningRateScheduler(scheduler)
+
 model.fit_generator(generator=train_generator,
                     steps_per_epoch=STEP_SIZE_TRAIN,
                     validation_data=valid_generator,
                     validation_steps=STEP_SIZE_VALID,
                     epochs=10,
-                    callbacks=[checkpoint])
+                    callbacks=[checkpoint, change_lr])
 
 # Evaluate the model on test set
 score = model.evaluate(x_test, y_test, verbose=0)

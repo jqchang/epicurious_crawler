@@ -6,3 +6,4 @@ output/*
 *.zip
 *.bak
 nohup*
+venv/*
