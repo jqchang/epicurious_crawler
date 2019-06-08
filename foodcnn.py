@@ -26,10 +26,10 @@ df = pd.read_csv('food_info_cleaned.csv',header=None)
 datagen=ImageDataGenerator(rescale=1./255,validation_split=0.15)
 train_generator=datagen.flow_from_dataframe(dataframe=df, directory=".",
             x_col=0, y_col=[1,2,3,4], class_mode="raw",
-            target_size=(620,413), batch_size=32, subset="training")
+            target_size=(620,413), batch_size=16, subset="training")
 valid_generator=datagen.flow_from_dataframe(dataframe=df, directory=".",
             x_col=0, y_col=[1,2,3,4], class_mode="raw",
-            target_size=(620,413), batch_size=32, subset="validation")
+            target_size=(620,413), batch_size=16, subset="validation")
 
 model = tf.keras.Sequential()
 model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=2, padding='same', activation='relu',
@@ -44,7 +44,7 @@ model.add(tf.keras.layers.Dropout(0.3))
 model.add(tf.keras.layers.Flatten())
 model.add(tf.keras.layers.Dense(256, activation='relu'))
 model.add(tf.keras.layers.Dropout(0.5))
-model.add(tf.keras.layers.Dense(4, activation='linear'))
+model.add(tf.keras.layers.Dense(4, activation='relu'))
 
 model.summary()
 opt = tf.keras.optimizers.Adam(lr=initial_lr, beta_1=0.9, beta_2=0.999,

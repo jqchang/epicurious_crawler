@@ -9,7 +9,7 @@ from flask import Flask, Response, request, render_template, send_file, redirect
 
 global graph,model
 graph = tf.get_default_graph()
-filepath = "./output/food-cnn-model.hdf5"
+filepath = "./output/model06062019.hdf5"
 app = Flask(__name__)
 
 np.random.seed(123)  # for reproducibility
@@ -36,7 +36,7 @@ def load_model(path):
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(256, activation='relu'))
     model.add(tf.keras.layers.Dropout(0.5))
-    model.add(tf.keras.layers.Dense(4, activation='linear'))
+    model.add(tf.keras.layers.Dense(4, activation='relu'))
 
     print("loading model from disk...")
     model.load_weights(path)
