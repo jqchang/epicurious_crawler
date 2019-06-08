@@ -24,10 +24,10 @@ checkpoint = ModelCheckpoint(filepath,
 
 df = pd.read_csv('food_info_cleaned.csv',header=None)
 datagen=ImageDataGenerator(rescale=1./255,validation_split=0.15)
-train_generator=datagen.flow_from_dataframe(dataframe=df, directory=".",
+train_generator = datagen.flow_from_dataframe(dataframe=df, directory=".",
             x_col=0, y_col=[1,2,3,4], class_mode="raw",
             target_size=(620,413), batch_size=16, subset="training")
-valid_generator=datagen.flow_from_dataframe(dataframe=df, directory=".",
+valid_generator = datagen.flow_from_dataframe(dataframe=df, directory=".",
             x_col=0, y_col=[1,2,3,4], class_mode="raw",
             target_size=(620,413), batch_size=16, subset="validation")
 
@@ -65,7 +65,4 @@ model.fit_generator(generator=train_generator,
                     epochs=10,
                     callbacks=[checkpoint, change_lr])
 
-# Evaluate the model on test set
-score = model.evaluate(x_test, y_test, verbose=0)
-# Print test accuracy
-print('\n', 'Test accuracy:', score)
+print('\n', 'Training complete.')
