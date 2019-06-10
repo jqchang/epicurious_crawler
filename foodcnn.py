@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from keras.applications import VGG16
+from keras.applications import VGG16, InceptionV3
 
 np.random.seed(123)  # for reproducibility
 initial_lr = 0.3
@@ -16,7 +17,11 @@ checkpoint = ModelCheckpoint(filepath,
                             mode='min')
 
 vgg_conv = VGG16(weights='imagenet', include_top=False, input_shape=(620, 413, 3))
-for layer in vgg_conv.layers:
+incept = InceptionV3(weights='imagenet', include_top=False, input_shape=(620,413,3))
+
+base_layer = incept
+
+for layer in base_layer.layers:
     layer.trainable = False
 
 df = pd.read_csv('food_info_cleaned.csv',header=None)
@@ -30,16 +35,16 @@ valid_generator = datagen.flow_from_dataframe(dataframe=df, directory=".",
 
 
 
-model = tf.keras.Sequential()
-model.add(vgg_conv)
+model = keras.Sequential()
+model.add(base_layer)
 
-model.add(tf.keras.layers.Flatten())
-model.add(tf.keras.layers.Dense(256, activation='relu'))
-model.add(tf.keras.layers.Dropout(0.5))
-model.add(tf.keras.layers.Dense(4, activation='relu'))
+model.add(keras.layers.Flatten())
+model.add(keras.layers.Dense(32, activation='sigmoid'))
+model.add(keras.layers.Dropout(0.25))
+model.add(keras.layers.Dense(4, activation='relu'))
 
 model.summary()
-opt = tf.keras.optimizers.Adam(lr=initial_lr, beta_1=0.9, beta_2=0.999,
+opt = keras.optimizers.Adam(lr=initial_lr, beta_1=0.9, beta_2=0.999,
                                 epsilon=None, decay=0.0, amsgrad=False)
 model.compile(loss='mean_squared_error', optimizer=opt)
 STEP_SIZE_TRAIN=train_generator.n//train_generator.batch_size
