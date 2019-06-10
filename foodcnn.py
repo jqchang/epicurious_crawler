@@ -9,7 +9,6 @@ except ModuleNotFoundError:
 
 
 np.random.seed(123)  # for reproducibility
-DEBUG = True
 initial_lr = 0.3
 
 # Keep only a single checkpoint, the best over test accuracy.

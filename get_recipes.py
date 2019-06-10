@@ -5,7 +5,7 @@ import csv
 from recipe import Recipe
 
 root_url = "https://services.epicurious.com/"
-START_PAGE = 1777
+START_PAGE = 1
 PER_PAGE = 20
 get_photo = True
 api_url = "api/search/v1/query?content=recipe&page={}&size={}".format(START_PAGE,PER_PAGE)
@@ -55,6 +55,7 @@ if __name__ == "__main__":
             get_next = False
     print("{} recipes found, {} recipes rejected.".format(len(all_recipes),ignored))
     taglist = list(tagset)
+    np.savetxt("tag_list.csv", taglist, delimiter=",")
     print(len(taglist),"tags")
     tagvector = np.zeros((len(all_recipes),len(taglist)),dtype=np.uint8)
     for i,r in enumerate(all_recipes):
