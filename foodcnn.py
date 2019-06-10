@@ -1,12 +1,8 @@
 import pandas as pd
 import numpy as np
-import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
-try:
-    from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
-except ModuleNotFoundError:
-    from tensorflow.python.keras.callbacks import ModelCheckpoint,LearningRateScheduler
-
+from keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from keras.applications import VGG16
 
 np.random.seed(123)  # for reproducibility
 initial_lr = 0.3
@@ -19,7 +15,9 @@ checkpoint = ModelCheckpoint(filepath,
                             save_best_only=True,
                             mode='min')
 
-
+vgg_conv = VGG16(weights='imagenet', include_top=False, input_shape=(620, 413, 3))
+for layer in vgg_conv.layers:
+    layer.trainable = False
 
 df = pd.read_csv('food_info_cleaned.csv',header=None)
 datagen=ImageDataGenerator(rescale=1./255,validation_split=0.15)
@@ -30,15 +28,10 @@ valid_generator = datagen.flow_from_dataframe(dataframe=df, directory=".",
             x_col=0, y_col=[1,2,3,4], class_mode="raw",
             target_size=(620,413), batch_size=16, subset="validation")
 
-model = tf.keras.Sequential()
-model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=2, padding='same', activation='relu',
-                                input_shape=(620,413,3)))
-model.add(tf.keras.layers.MaxPooling2D(pool_size=2))
-model.add(tf.keras.layers.Dropout(0.3))
 
-model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=2, padding='same', activation='relu'))
-model.add(tf.keras.layers.MaxPooling2D(pool_size=2))
-model.add(tf.keras.layers.Dropout(0.3))
+
+model = tf.keras.Sequential()
+model.add(vgg_conv)
 
 model.add(tf.keras.layers.Flatten())
 model.add(tf.keras.layers.Dense(256, activation='relu'))
